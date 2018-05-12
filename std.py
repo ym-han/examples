@@ -1,3 +1,11 @@
+# ym's changes:
+# =====================
+# Sentence --> pithier `line'
+# more --> easier for me to pronounce `mod'
+# phrase --> shorter `oh'
+# exclamation point --> exclamation mark
+# added shift-tab
+
 from talon.voice import Word, Context, Key, Rep, RepPhrase, Str, press
 from talon import ctrl
 from talon_init import TALON_HOME, TALON_PLUGINS, TALON_USER
@@ -110,22 +118,24 @@ ctx = Context('input')
 keymap = {}
 keymap.update(alpha)
 keymap.update({
-    'phrase <dgndictation> [over]': text,
+    'oh <dgndictation> [over]': text,
     'word <dgnwords>': word,
 
-    'sentence <dgndictation> [over]': sentence_text,
+    'line <dgndictation> [over]': sentence_text,
     'comma <dgndictation> [over]': [', ', text],
+    'quote <dgndictation> [over]': ["'", text],
     'period <dgndictation> [over]': ['. ', sentence_text],
-    'more <dgndictation> [over]': [' ', text],
+    'mod <dgndictation> [over]': [' ', text],
 
     '(%s)+ <dgndictation>' % (' | '.join(formatters)): FormatText,
 
-    'tab':   Key('tab'),
+    'tab':  Key('tab'),
+    'shift-tab': Key('shift-tab'), 
     'left':  Key('left'),
     'right': Key('right'),
     'up':    Key('up'),
     'down':  Key('down'),
-
+    
     'delete': Key('backspace'),
 
     'slap': [Key('cmd-right enter')],
