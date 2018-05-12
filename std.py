@@ -2,7 +2,7 @@
 # =====================
 # Sentence --> pithier `line'
 # more --> easier for me to pronounce `mod'
-# phrase --> shorter `oh'
+# phrase --> write
 # exclamation point --> exclamation mark
 # added shift-tab
 
@@ -118,7 +118,7 @@ ctx = Context('input')
 keymap = {}
 keymap.update(alpha)
 keymap.update({
-    'oh <dgndictation> [over]': text,
+    'write <dgndictation> [over]': text,
     'word <dgnwords>': word,
 
     'line <dgndictation> [over]': sentence_text,
