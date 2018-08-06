@@ -12,7 +12,7 @@ k -> kim
  w -> woke
  h -> ham
  m -> met
- f -> fiend
+ f -> fin
  j -> jug
- d -> dig
+ d -> din
  g -> gig
