@@ -11,7 +11,8 @@ from talon import ctrl
 from talon_init import TALON_HOME, TALON_PLUGINS, TALON_USER
 import string
 
-alpha_alt = 'air bat cap die each fail gone harm sit jury crash look mad near odd pit quest red sun trap urge vest whale box yes zip'.split()
+alpha_alt = 'air bat cap din each fin gig ham sit jug kim look met near odd pit quest red sun trap urge vest woke box yes zip'.split()
+
 alnum = list(zip(alpha_alt, string.ascii_lowercase)) + [(str(i), str(i)) for i in range(0, 10)]
 
 alpha = {}
