@@ -1,18 +1,30 @@
 # ym's changes:
 # =====================
-# Sentence --> pithier `line'
+# Sentence --> pithier `line' [but line keeps getting conflated with nine, annoyingly]
 # more --> easier for me to pronounce `mod'
-# phrase --> write
+# phrase --> write --> oh [since right also used for right arrow]
 # exclamation point --> exclamation mark
 # added shift-tab
+# Added my name (word ym)
+# Added commands for comments
+# bold for markdown: mark b
+# italics: italicize
+# increase, decrease font
+# k -> kim
+# w -> woke
+# h -> ham
+# m -> met
+# f -> fin
+# j -> jug
+# d -> din
+# g -> gig
 
 from talon.voice import Word, Context, Key, Rep, RepPhrase, Str, press
-from talon import ctrl
+from talon import ctrl, clip
 from talon_init import TALON_HOME, TALON_PLUGINS, TALON_USER
 import string
 
 alpha_alt = 'air bat cap din each fin gig ham sit jug kim look met near odd pit quest red sun trap urge vest woke box yes zip'.split()
-
 alnum = list(zip(alpha_alt, string.ascii_lowercase)) + [(str(i), str(i)) for i in range(0, 10)]
 
 alpha = {}
@@ -78,7 +90,7 @@ def rot13(i, word, _):
 
 formatters = {
     'dunder': (True,  lambda i, word, _: '__%s__' % word if i == 0 else word),
-    'camel':  (True,  lambda i, word, _: word if i == 0 else word.capitalize()),
+    # [commented out coz kept interfering with dictation] 'camel':  (True,  lambda i, word, _: word if i == 0 else word.capitalize()),
     'snake':  (True,  lambda i, word, _: word if i == 0 else '_'+word),
     'smash':  (True,  lambda i, word, _: word),
     # spinal or kebab?
@@ -88,15 +100,23 @@ formatters = {
     'dubstring': (False, surround('"')),
     'string': (False, surround("'")),
     'padded': (False, surround(" ")),
-    'rot thirteen':  (False, rot13),
+    'rot-thirteen':  (False, rot13),
 }
+
 
 def FormatText(m):
     fmt = []
     for w in m._words:
         if isinstance(w, Word):
             fmt.append(w.word)
-    words = parse_words(m)
+    try:
+        words = parse_words(m)
+    except AttributeError:
+        with clip.capture() as s:
+            press('cmd-c')
+        words = s.get().split(' ')
+        if not words:
+            return
 
     tmp = []
     spaces = True
@@ -119,7 +139,7 @@ ctx = Context('input')
 keymap = {}
 keymap.update(alpha)
 keymap.update({
-    'write <dgndictation> [over]': text,
+    'oh <dgndictation> [over]': text,
     'word <dgnwords>': word,
 
     'line <dgndictation> [over]': sentence_text,
@@ -128,13 +148,13 @@ keymap.update({
     'period <dgndictation> [over]': ['. ', sentence_text],
     'mod <dgndictation> [over]': [' ', text],
 
-    '(%s)+ <dgndictation>' % (' | '.join(formatters)): FormatText,
+    '(%s)+ [<dgndictation>]' % (' | '.join(formatters)): FormatText,
 
     'tab':  Key('tab'),
     'shift-tab': Key('shift-tab'), 
     'left':  Key('left'),
     'right': Key('right'),
-    'up':    Key('up'),
+    '(guppy | jeep)': Key('up'),
     'down':  Key('down'),
     
     'delete': Key('backspace'),
@@ -142,9 +162,9 @@ keymap.update({
     'slap': [Key('cmd-right enter')],
     'enter': Key('enter'),
     'escape': Key('esc'),
-    'question [mark]': '?',
-    'tilde': '~',
-    '(bang | exclamation point)': '!',
+    'make question': '?',
+    'tilde': '~', 
+    '(bang | exclamation mark)': '!',
     'dollar [sign]': '$',
     'downscore': '_',
     '(semi | semicolon)': ';',
@@ -203,23 +223,23 @@ keymap.update({
     'run (them | vim)': 'vim ',
     'run L S': 'ls\n',
     'dot pie': '.py',
-    'run make': 'make\n',
-    'run jobs': 'jobs\n',
+#    'run make': 'make\n',
+#    'run jobs': 'jobs\n',
 
     'const': 'const ',
     'static': 'static ',
     'tip pent': 'int ',
     'tip char': 'char ',
     'tip byte': 'byte ',
-    'tip pent 64': 'int64_t ',
-    'tip you went 64': 'uint64_t ',
-    'tip pent 32': 'int32_t ',
-    'tip you went 32': 'uint32_t ',
-    'tip pent 16': 'int16_t ',
-    'tip you went 16': 'uint16_t ',
-    'tip pent 8': 'int8_t ',
-    'tip you went 8': 'uint8_t ',
-    'tip size': 'size_t',
+#    'tip pent 64': 'int64_t ',
+#    'tip you went 64': 'uint64_t ',
+#    'tip pent 32': 'int32_t ',
+#    'tip you went 32': 'uint32_t ',
+#    'tip pent 16': 'int16_t ',
+#    'tip you went 16': 'uint16_t ',
+#    'tip pent 8': 'int8_t ',
+#    'tip you went 8': 'uint8_t ',
+#    'tip size': 'size_t',
     'tip float': 'float ',
     'tip double': 'double ',
 
@@ -251,6 +271,29 @@ keymap.update({
     'comment see': '// ',
     'comment py': '# ',
 
+# Markdown stuff [ym]
+    'begin comment': '<!-- ',
+    'end comment': '-->',
+
+    'mark b': '**',
+
+# Non-mark down text editing stuff   
+    'make italics': Key('cmd-i'),
+    'make bold': Key('cmd-b'),
+# To do / add: italicize word to left; italicize word to right; also bolding and strikethru
+
+    'big dash': '---',
+
+    'batick': '`',
+
+
+
+    'increase font': Key('cmd-+'),
+    'decrease font': Key('cmd--'),
+
+
+
+
     'word queue': 'queue',
     'word eye': 'eye',
     'word bson': 'bson',
@@ -263,11 +306,17 @@ keymap.update({
     'word (dickt | dictionary)': 'dict',
     'word shell': 'shell',
 
-    'word lunixbochs': 'lunixbochs',
+#    'word lunixbochs': 'lunixbochs',
+    'word YM': 'Yongming',
+
+    'rationalist': 'Rationalist',
+    'rationalists': 'Rationalists',
+
+    'word quid': 'quid',
+
+    
+
     'word talon': 'talon',
-    'word Point2d': 'Point2d',
-    'word Point3d': 'Point3d',
-    'title Point': 'Point',
     'word angle': 'angle',
 
     'dunder in it': '__init__',
@@ -278,12 +327,12 @@ keymap.update({
     'state past': 'pass',
 
     'equals': '=',
-    '(minus | dash)': '-',
+    '(minus | dash | hyphen)': '-',
     'plus': '+',
     'arrow': '->',
     'call': '()',
-    'indirect': '&',
-    'dereference': '*',
+#    'indirect': '&',
+#    'dereference': '*',
     '(op equals | assign)': ' = ',
     'op (minus | subtract)': ' - ',
     'op (plus | add)': ' + ',
@@ -312,9 +361,9 @@ keymap.update({
     '[(op | logical | bitwise)] (right shift | shift right)': ' >> ',
     '(op | logical | bitwise) and equals': ' &= ',
     '(op | logical | bitwise) or equals': ' |= ',
-    '(op | logical | bitwise) (ex | exclusive) or equals': ' ^= ',
-    '[(op | logical | bitwise)] (left shift | shift left) equals': ' <<= ',
-    '[(op | logical | bitwise)] (right shift | shift right) equals': ' >>= ',
+#    '(op | logical | bitwise) (ex | exclusive) or equals': ' ^= ',
+#    '[(op | logical | bitwise)] (left shift | shift left) equals': ' <<= ',
+#    '[(op | logical | bitwise)] (right shift | shift right) equals': ' >>= ',
 
     'shebang bash': '#!/bin/bash -u\n',
 
